@@ -1,0 +1,4 @@
+include tensorflask/schema.sql
+graft tensorflask/static
+graft tensorflask/templates
+global-exclude *.pyc

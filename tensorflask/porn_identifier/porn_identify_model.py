@@ -1,17 +1,10 @@
-########################################################################################
-# Davi Frossard, 2016                                                                  #
-# VGG16 implementation in TensorFlow                                                   #
-# Details:                                                                             #
-# http://www.cs.toronto.edu/~frossard/post/vgg16/                                      #
-#                                                                                      #
-# Model from https://gist.github.com/ksimonyan/211839e770f7b538e2d8#file-readme-md     #
-# Weights from Caffe converted using https://github.com/ethereon/caffe-tensorflow      #
-########################################################################################
-
+import yaml
 import numpy as np
 import tensorflow as tf
 
-learning_rate = 0.00001
+
+with open("tensorflask.yaml", , mode='r', encoding="utf-8") as f:
+    CONFIG = yaml.load(f, Loader=yaml.FullLoader)["porn_identifier"]
 
 
 class Vgg16:
@@ -282,22 +275,29 @@ class PornIdentifier(Vgg16):
             self.fc4l = tf.nn.bias_add(tf.matmul(self.fc3l, fc4w), fc4b)
             self.parameters += [fc4w, fc4b]
 
+        # loss function
         with tf.name_scope('loss') as scope:
             self.true_out = tf.placeholder(tf.float32, [None, 3])
             self.cross_entropy = tf.nn.softmax_cross_entropy_with_logits_v2(
                 labels=self.true_out, logits=self.fc4l)
             self.loss = tf.reduce_mean(self.cross_entropy)
 
+        # prediction
         with tf.name_scope('pred') as scope:
             self.probs = tf.nn.softmax(self.fc4l)
             self.pred = tf.argmax(self.probs, axis=1)
             self.pred_one_hot = tf.one_hot(self.pred, 3)
 
+        # optimization
         with tf.name_scope('train') as scope:
             self.global_step = tf.Variable(
                 0, name='global_step', trainable=False)
-            self.optimizer = tf.train.AdamOptimizer(
-                learning_rate=learning_rate)
+            if CONFIG["optimizer"] == "adam":
+                self.optimizer = tf.train.AdamOptimizer(
+                    learning_rate=CONFIG["learning_rate"])
+            else:
+                self.optimizer = tf.train.AdamOptimizer(
+                    learning_rate=CONFIG["learning_rate"])
             self.train_op = self.optimizer.minimize(
                 self.loss, global_step=self.global_step)
 

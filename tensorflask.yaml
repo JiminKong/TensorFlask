@@ -3,3 +3,8 @@ project:
   author: JiminKong
   github: https://github.com/JiminKong/TensorFlask
 
+
+porn_identifier:
+  learning_rate: 0.00001
+  optimizer: adam
+  
