@@ -3,7 +3,7 @@ import numpy as np
 import tensorflow as tf
 
 
-with open("tensorflask.yaml", , mode='r', encoding="utf-8") as f:
+with open("tensorflask.yaml", mode='r', encoding="utf-8") as f:
     CONFIG = yaml.load(f, Loader=yaml.FullLoader)["porn_identifier"]
 
 
@@ -262,7 +262,7 @@ class Vgg16:
 class PornIdentifier(Vgg16):
     def __init__(self):
         self.imgs = tf.placeholder(tf.float32, [None, 224, 224, 3])
-        self.vgg17_weights_file = 'porn_identifier/vgg17_weights.npz'
+        self.vgg17_weights_file = 'tensorflask/porn_identifier/vgg17_weights.npz'
         Vgg16.__init__(self, self.imgs, 'porn_identifier/vgg16_weights.npz')
 
         # fc4 added to fit nsfw dataset
@@ -342,3 +342,4 @@ if __name__ == "__main__":
         # pron_identifier.load_weights(sess)
         pron_identifier.vgg17_weights_file = 'vgg17_weights.npz'
         pron_identifier.load_vgg17_weights(sess)
+        
